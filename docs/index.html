@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Odoo Partners in Sri Lanka</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+    .partner { border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+    .grade { font-weight: bold; color: #555; }
+    a { color: #0366d6; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <h1>Odoo Partners in Sri Lanka</h1>
+  <p>Last updated: <span id="updated"></span></p>
+  <div id="partners"></div>
+
+  <script>
+    fetch('partners.json')
+      .then(response => response.json())
+      .then(partners => {
+        document.getElementById('updated').textContent = new Date().toLocaleString();
+        
+        const container = document.getElementById('partners');
+        partners.forEach(partner => {
+          const div = document.createElement('div');
+          div.className = 'partner';
+          div.innerHTML = `
+            <h2>${partner.name}</h2>
+            <p class="grade">${partner.grade} Partner</p>
+            <p>${partner.description || 'No description available'}</p>
+            <a href="${partner.link}" target="_blank">View Profile →</a>
+          `;
+          container.appendChild(div);
+        });
+      })
+      .catch(error => {
+        console.error('Error loading data:', error);
+        document.getElementById('partners').innerHTML = 
+          '<p>Error loading partner data. Please try again later.</p>';
+      });
+  </script>
+</body>
+</html>
