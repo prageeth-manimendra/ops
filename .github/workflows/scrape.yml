@@ -1,0 +1,30 @@
+name: Scrape Odoo Partners
+on:
+  schedule:
+    - cron: '0 12 * * *'  # Runs daily at 12 PM UTC
+  workflow_dispatch:      # Allows manual triggering
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Install dependencies
+      run: npm install axios cheerio
+    
+    - name: Run scraper
+      run: node scraper.js
+    
+    - name: Commit and push changes
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add .
+        git commit -m "Update partner data $(date +'%Y-%m-%d')" || echo "No changes to commit"
+        git push
